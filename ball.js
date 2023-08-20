@@ -10,13 +10,22 @@ class Ball {
 
     draw() {
         this.ctx.beginPath();
-        this.ctx.clearRect(0, 0, canvas.width, canvas.height);
+        this.ctx.clearRect(0, 0, canvas.wdth, canvas.height);
         this.ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
         this.ctx.fillStyle = 'black';
         this.ctx.fill();
     }
+    clear(){
+        this.ctx.clearRect(
+            this.x - this.radius,
+            this.y - this.radius,
+            this.radius * 2,
+            this.radius * 2
+          );
+    }
 
     update() {
+        this.clear()
         this.x += this.vx;
         this.y += this.vy;
 

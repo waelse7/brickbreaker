@@ -10,9 +10,17 @@ const bricks = new Bricks(ctx)
 paddle.moveLeft()
 bricks.drawBricks()
 
-const ball = new Ball(100, 100, 5, 5, 10, ctx);
+document.addEventListener('keydown', handleKeyDown);
 
+function handleKeyDown(event) {
+  if (event.key === 'ArrowLeft') {
+    paddle.moveLeft();
+  } else if (event.key === 'ArrowRight') {
+    paddle.moveRight();
+  }
+}
+
+const ball = new Ball(400, 300, 5,5 , 10, ctx)
 setInterval(() => {
-    ball.update();
-    bricks.drawBricks()
+    ball.update()
 }, 20);

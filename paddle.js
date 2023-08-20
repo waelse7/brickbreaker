@@ -7,11 +7,17 @@ class Paddle {
         this.ctx = ctx
         this.draw()
     }
-
+    clear(){
+        this.ctx.clearRect(
+            this.x - this.width / 2,
+            this.y - this.height / 2,
+            this.width,
+            this.height
+          );
+    }
     draw(){
         this.ctx.beginPath();
         this.ctx.fillStyle = 'black';
-        this.ctx.clearRect(0, 0, canvas.width, canvas.height);
         this.ctx.rect(
           this.x - this.width / 2,
           this.y - this.height / 2,
@@ -22,11 +28,13 @@ class Paddle {
         this.ctx.closePath();
     }
     moveRight(){
+        this.clear()
         this.x += 5;
         this.draw()
 
     }
     moveLeft(){
+        this.clear()
         this.x -= 5;
         this.draw()
     }
