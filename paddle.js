@@ -29,13 +29,13 @@ class Paddle {
     }
     moveRight(){
         this.clear()
-        this.x += 5;
+        this.x += 15;
         this.draw()
 
     }
     moveLeft(){
         this.clear()
-        this.x -= 5;
+        this.x -= 15;
         this.draw()
     }
 }

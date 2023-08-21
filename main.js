@@ -20,7 +20,12 @@ function handleKeyDown(event) {
   }
 }
 
-const ball = new Ball(400, 300, 5,5 , 10, ctx)
-setInterval(() => {
-    ball.update()
-}, 20);
+function resetGame() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  ball.reset();
+  
+  bricks.initBricks();
+  playAgainButton.style.display = 'none';
+}
+const ball = new Ball(400, 300, 4, 4 , 10, ctx)

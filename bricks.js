@@ -7,6 +7,16 @@ class Brick {
     this.color = color
     this.ctx = ctx
   }
+
+  clear(){
+    this.ctx.clearRect(
+      this.x - this.width / 2 - (this.ctx.lineWidth / 2),
+      this.y - this.height / 2 - (this.ctx.lineWidth / 2),
+      this.width + 2 * (this.ctx.lineWidth / 2),
+      this.height + 2 * (this.ctx.lineWidth / 2)
+    );
+  }
+
   draw(){
     this.ctx.beginPath();
     this.ctx.fillStyle = this.color;
@@ -18,7 +28,7 @@ class Brick {
     );
     this.ctx.fill();
 
-    this.ctx.lineWidth = 2; 
+    this.ctx.lineWidth = 1; 
     this.ctx.strokeRect(
       this.x - this.width / 2,
       this.y - this.height / 2,

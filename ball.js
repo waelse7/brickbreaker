@@ -6,6 +6,9 @@ class Ball {
         this.vy = vy;
         this.radius = radius;
         this.ctx = ctx;
+        this.interval = setInterval(() => {
+            this.update();
+          }, 20);
     }
 
     draw() {
@@ -24,6 +27,22 @@ class Ball {
           );
     }
 
+    displayMessage(message) {
+        ctx.font = '30px Arial';
+        ctx.fillStyle = 'black';
+        ctx.fillText(message, canvas.width / 2 - 75, canvas.height / 2);
+      }
+
+      reset() {
+        this.x = 400; 
+        this.y = 300;
+    
+        this.interval = setInterval(() => {
+          this.update();
+        }, 20);
+      }
+
+
     update() {
         this.clear()
         this.x += this.vx;
@@ -36,6 +55,37 @@ class Ball {
         if (this.y < 0 || this.y > canvas.height) {
             this.vy = -this.vy;
         }
+        if (this.y + this.radius > canvas.height) {
+            this.displayMessage('You Lose!')
+            clearInterval(this.interval)
+            playAgainButton.style.display = 'block'
+        }
+        if (
+            this.y + this.radius > paddle.y - paddle.height / 2 &&
+            this.y - this.radius < paddle.y + paddle.height / 2 &&
+            this.x + this.radius > paddle.x - paddle.width / 2 &&
+            this.x - this.radius < paddle.x + paddle.width / 2
+        ) {
+            this.vy = -this.vy;
+        }
+    
+        for (let row = 0; row < bricks.brickList.length; row++) {
+            for (let col = 0; col < bricks.brickList[row].length; col++) {
+            const brick = bricks.brickList[row][col];
+            if (
+                brick &&
+                this.y + this.radius > brick.y - brick.height / 2 &&
+                this.y - this.radius < brick.y + brick.height / 2 &&
+                this.x + this.radius > brick.x - brick.width / 2 &&
+                this.x - this.radius < brick.x + brick.width / 2
+            ) {
+                bricks.brickList[row][col].clear();
+                bricks.brickList[row][col] = null; 
+                this.vy = -this.vy;
+            }
+            }
+        }
+
         this.draw() 
     }
 }
