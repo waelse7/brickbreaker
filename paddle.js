@@ -6,6 +6,7 @@ class Paddle {
         this.height = height
         this.ctx = ctx
         this.draw()
+        document.addEventListener('keydown', this.handleKeyDown.bind(this));
     }
     clear(){
         this.ctx.clearRect(
@@ -38,4 +39,18 @@ class Paddle {
         this.x -= 15;
         this.draw()
     }
+    setMid(){
+        this.clear()
+        this.x = 400
+        this.draw()
+    }
+
+    handleKeyDown(event) {
+    if (event.key === 'ArrowLeft') {
+        this.moveLeft();
+    } else if (event.key === 'ArrowRight') {
+        this.moveRight();
+    }
+    }
+
 }

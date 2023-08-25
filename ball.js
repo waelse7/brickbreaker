@@ -9,6 +9,8 @@ class Ball {
         this.interval = setInterval(() => {
             this.update();
           }, 20);
+        this.gameon = true
+        this.direction = 1
     }
 
     draw() {
@@ -36,7 +38,7 @@ class Ball {
       reset() {
         this.x = 400; 
         this.y = 300;
-    
+        this.direction = 1
         this.interval = setInterval(() => {
           this.update();
         }, 20);
@@ -45,7 +47,8 @@ class Ball {
 
     update() {
         this.clear()
-        this.x += this.vx;
+        paddle.draw()
+        this.x += this.vx * this.direction;
         this.y += this.vy;
 
         if (this.x < 0 || this.x > canvas.width) {
@@ -59,6 +62,7 @@ class Ball {
             this.displayMessage('You Lose!')
             clearInterval(this.interval)
             playAgainButton.style.display = 'block'
+            this.gameon = false
         }
         if (
             this.y + this.radius > paddle.y - paddle.height / 2 &&
@@ -67,6 +71,11 @@ class Ball {
             this.x - this.radius < paddle.x + paddle.width / 2
         ) {
             this.vy = -this.vy;
+            if (this.x > paddle.x) {
+                this.direction = 1;
+            } else {
+                this.direction = -1;
+            }
         }
     
         for (let row = 0; row < bricks.brickList.length; row++) {
