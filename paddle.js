@@ -1,56 +1,44 @@
 class Paddle {
-    constructor(x, y, width, height, ctx){
-        this.x = x
-        this.y = y
-        this.width = width
-        this.height = height
-        this.ctx = ctx
-        this.draw()
-        document.addEventListener('keydown', this.handleKeyDown.bind(this));
-    }
-    clear(){
-        this.ctx.clearRect(
-            this.x - this.width / 2,
-            this.y - this.height / 2,
-            this.width,
-            this.height
-          );
-    }
-    draw(){
-        this.ctx.beginPath();
-        this.ctx.fillStyle = 'black';
-        this.ctx.rect(
-          this.x - this.width / 2,
-          this.y - this.height / 2,
-          this.width,
+  constructor(x, y, width, height, ctx){
+      this.x = x
+      this.y = y
+      this.width = width
+      this.height = height
+      this.ctx = ctx
+      document.addEventListener('mousemove', this.handleMouseMovements.bind(this))
+  }
+  draw(){
+      this.ctx.fillStyle = 'black'
+      this.ctx.fillRect(
+          this.x - this.width/2,
+          this.y - this.height/2, 
+          this.width, 
           this.height
-        );
-        this.ctx.fill();
-        this.ctx.closePath();
-    }
-    moveRight(){
-        this.clear()
-        this.x += 15;
-        this.draw()
+          )
+  }
+  remove(){
+      this.ctx.clearRect(
+          (this.x - this.width/2) - 1,
+          (this.y - this.height/2) - 1, 
+          this.width + 2, 
+          this.height + 2
+        )
+  }
 
-    }
-    moveLeft(){
-        this.clear()
-        this.x -= 15;
-        this.draw()
-    }
-    setMid(){
-        this.clear()
-        this.x = 400
-        this.draw()
-    }
 
-    handleKeyDown(event) {
-    if (event.key === 'ArrowLeft') {
-        this.moveLeft();
-    } else if (event.key === 'ArrowRight') {
-        this.moveRight();
+  handleMouseMovements(event) {
+      this.mouseX = event.clientX - canvas.offsetLeft
+      this.mouseY = event.clientY - canvas.offsetTop
+      this.update()
     }
+  
+    update() {
+      this.remove()
+      
+      this.x += (this.mouseX - this.x) * 0.1
+      this.x = Math.max(this.width/2, Math.min(this.x, canvas.width - this.width/2))
+      
+      this.draw()
+      requestAnimationFrame(this.update.bind(this))
     }
-
 }

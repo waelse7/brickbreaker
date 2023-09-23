@@ -1,100 +1,116 @@
 class Ball {
-    constructor(x, y, vx, vy, radius, ctx) {
-        this.x = x;
-        this.y = y;
-        this.vx = vx;
-        this.vy = vy;
-        this.radius = radius;
-        this.ctx = ctx;
-        this.interval = setInterval(() => {
-            this.update();
-          }, 20);
-        this.gameon = true
+    constructor(x, y, xv, yv, rad, ctx){
+        this.x = x
+        this.y = y
+        this.xv = xv
+        this.yv = yv
+        this.rad = rad
+        this.ctx = ctx
         this.direction = 1
     }
-
-    draw() {
-        this.ctx.beginPath();
-        this.ctx.clearRect(0, 0, canvas.wdth, canvas.height);
-        this.ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+    draw(){
+        this.ctx.beginPath()
+        this.ctx.arc(this.x, this.y, this.rad, 0, Math.PI * 2)
         this.ctx.fillStyle = 'black';
-        this.ctx.fill();
+        this.ctx.fill()
+        this.ctx.closePath()
     }
-    clear(){
+    remove(){
         this.ctx.clearRect(
-            this.x - this.radius,
-            this.y - this.radius,
-            this.radius * 2,
-            this.radius * 2
-          );
+            this.x - this.rad,
+            this.y - this.rad,
+            this.rad * 2,
+            this.rad * 2
+          )
+        }
+
+    move(){
+        this.remove()
+        this.x += this.xv * this.direction
+        this.y += this.yv
+        this.checkCollisionsWithWalls()
+        this.checkCollisionsWithPaddle()
+        this.checkCollisionsWithBricks()
+        this.checkForWin()
+        this.draw()
     }
-
-    displayMessage(message) {
-        ctx.font = '30px Arial';
-        ctx.fillStyle = 'black';
-        ctx.fillText(message, canvas.width / 2 - 75, canvas.height / 2);
-      }
-
-      reset() {
-        this.x = 400; 
-        this.y = 300;
-        this.direction = 1
-        this.interval = setInterval(() => {
-          this.update();
-        }, 20);
-      }
-
-
-    update() {
-        this.clear()
-        paddle.draw()
-        this.x += this.vx * this.direction;
-        this.y += this.vy;
-
+    checkCollisionsWithWalls(){
         if (this.x < 0 || this.x > canvas.width) {
-            this.vx = -this.vx;
+            this.xv = -this.xv
         }
-
-        if (this.y < 0 || this.y > canvas.height) {
-            this.vy = -this.vy;
+        if (this.y < 0){
+            this.yv = -this.yv
         }
-        if (this.y + this.radius > canvas.height) {
-            this.displayMessage('You Lose!')
+        if (this.y > canvas.height) {
             clearInterval(this.interval)
-            playAgainButton.style.display = 'block'
-            this.gameon = false
+            const resultMessage = document.getElementById("result-message")
+            resultMessage.textContent = "You lose"
+            resultMessage.style.color = "red"
+            playagain.style.display = 'block'
+            playagain.style.display = 'block'
         }
+    }
+    checkCollisionsWithPaddle(){
         if (
-            this.y + this.radius > paddle.y - paddle.height / 2 &&
-            this.y - this.radius < paddle.y + paddle.height / 2 &&
-            this.x + this.radius > paddle.x - paddle.width / 2 &&
-            this.x - this.radius < paddle.x + paddle.width / 2
-        ) {
-            this.vy = -this.vy;
-            if (this.x > paddle.x) {
-                this.direction = 1;
-            } else {
-                this.direction = -1;
+            this.y + this.rad > paddle.y - paddle.height / 2 &&
+            this.y - this.rad < paddle.y + paddle.height / 2 &&
+            this.x + this.rad > paddle.x - paddle.width / 2 &&
+            this.x - this.rad < paddle.x + paddle.width / 2
+        ) { 
+            const pos = this.x - paddle.x;
+            if (this.direction === -1) {
+                if (pos < 0) {
+                    this.xv = -Math.abs(this.xv)
+                } else if (pos >= 0) {
+                    this.xv = Math.abs(this.xv)
+                }
+            } else if (this.direction === 1) {
+                if (pos < 0) {
+                    this.xv = -Math.abs(this.xv)
+                } else if (pos >= 0) {
+                    this.xv = Math.abs(this.xv)
+                }
             }
+            this.yv = -this.yv
         }
-    
-        for (let row = 0; row < bricks.brickList.length; row++) {
-            for (let col = 0; col < bricks.brickList[row].length; col++) {
-            const brick = bricks.brickList[row][col];
+    }
+    checkCollisionsWithBricks(){
+        for (let i = 0; i < bricks.lst.length; i++) {
+            console.log(bricks.lst.length);
+            for (let j = 0; j < bricks.lst[i].length; j++) {
+                const brick = bricks.lst[i][j];
             if (
                 brick &&
-                this.y + this.radius > brick.y - brick.height / 2 &&
-                this.y - this.radius < brick.y + brick.height / 2 &&
-                this.x + this.radius > brick.x - brick.width / 2 &&
-                this.x - this.radius < brick.x + brick.width / 2
-            ) {
-                bricks.brickList[row][col].clear();
-                bricks.brickList[row][col] = null; 
-                this.vy = -this.vy;
+                this.y + this.rad > brick.y - brick.height / 2 &&
+                this.y - this.rad < brick.y + brick.height / 2 &
+                this.x + this.rad > brick.x - brick.width / 2 &&
+                this.x - this.rad < brick.x + brick.width / 2 
+            ){
+                bricks.lst[i][j].remove()
+                bricks.lst[i][j] = null
+                this.yv = -this.yv
             }
             }
         }
-
-        this.draw() 
+    }
+    checkForWin(){
+        for (let i = 0; i < bricks.lst.length; i++) {
+            console.log(bricks.lst.length);
+            for (let j = 0; j < bricks.lst[i].length; j++) {
+                if (bricks.lst[i][j] !== null){
+                    return
+                }
+            }
+        const resultMessage = document.getElementById("result-message")
+        resultMessage.textContent = "You win"
+        resultMessage.style.color = "green"
+        playagain.style.display = 'block'
+        }
+    }
+    init(){
+        this.interval = setInterval(() => {
+            this.move();
+          }, 20)
     }
 }
+
